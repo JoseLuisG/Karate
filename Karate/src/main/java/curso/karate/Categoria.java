@@ -37,6 +37,8 @@ public class Categoria implements Serializable {
     
     private String modalidad;
     
+    //===========================================Constructors
+    
     public Categoria() {
         this.sexo = SexoCategoriaEnum.FEMENINA.toString();
         this.modalidad = ModalidadEnum.KATA.toString();
@@ -52,6 +54,8 @@ public class Categoria implements Serializable {
         this.sexo = sexo.toString();
         this.modalidad = modalidad.toString();
     }
+    
+    //===========================================Getters/setters
 
     public long getId() {
         return id;
@@ -117,10 +121,39 @@ public class Categoria implements Serializable {
     public void setModalidad(ModalidadEnum modalidad) {
         this.modalidad = modalidad.toString();
     }
+    //===========================================General methods
 
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 29 * hash + (int) (this.id ^ (this.id >>> 32));
+        hash = 29 * hash + ("Categoria".hashCode());
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Categoria other = (Categoria) obj;
+        if (this.id != other.id) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Categoria{" + "id=" + id + ", nombre=" + nombre + ", pesoMin=" + pesoMin + ", pesoMax=" + pesoMax + ", edadMin=" + edadMin + ", edadMax=" + edadMax + ", sexo=" + sexo + ", modalidad=" + modalidad + '}';
+    }
+    
         
-
-    // Queries
+    //===========================================Queries
+    
     public static Categoria findById(EntityManager em, long id) {
         return em.find(Categoria.class, id);
     }
@@ -172,10 +205,7 @@ public class Categoria implements Serializable {
         return count;
     }
 
-
-
-
-    // Modifying
+    //===========================================Modify
 
     public boolean create(EntityManager em) {
         EntityTransaction et = em.getTransaction();
@@ -202,6 +232,26 @@ public class Categoria implements Serializable {
             em.flush();
             return true;
         }
+    }
+    public Categoria update(EntityManager em) {
+        EntityTransaction et = em.getTransaction();
+        try {
+            et.begin();
+            Categoria competidor = updateNoTransaction(em);
+            et.commit();
+            return competidor;
+        } catch (Exception e) {
+            if (et.isActive()) {
+                et.rollback();
+            }
+            return null;
+        }
+    }
+
+    public Categoria updateNoTransaction(EntityManager em) {
+        Categoria competidor = em.merge(this);
+        em.flush();
+        return competidor;
     }
 
     public boolean remove(EntityManager em) {
