@@ -1,5 +1,6 @@
 package curso.karate;
 
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -12,8 +13,8 @@ import javax.persistence.Transient;
 import javax.persistence.TypedQuery;
 
 @Entity
-@Table(name="Usuario")
-public class Usuario 
+@Table(name="usuarios")
+public class Usuario implements Serializable
 {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -35,7 +36,22 @@ public class Usuario
     private RolEnum rol;
     @Column(name = "rol")
     private String rolString;
+
+    public Usuario() {
+    }
     
+    // Constructor
+    public Usuario(long id, String nombreUsuario, String password, String nombre, RolEnum rol, String pais) {
+        this.id = id;
+        this.nombreUsuario = nombreUsuario;
+        this.password = password;
+        this.nombre = nombre;
+        this.pais = pais;
+        this.rolString = rol.toString();
+    }
+    
+    
+    //   Getters && Setters
     public long getId() {
         return id;
     }
@@ -109,23 +125,13 @@ public class Usuario
             return false;
         }
         final Usuario other = (Usuario) obj;
-        if ((this.nombreUsuario == null) ? (other.nombreUsuario != null) : !this.nombreUsuario.equals(other.nombreUsuario)) {
-            return false;
-        }
-        if ((this.password == null) ? (other.password != null) : !this.password.equals(other.password)) {
-            return false;
-        }
-        if ((this.nombre == null) ? (other.nombre != null) : !this.nombre.equals(other.nombre)) {
-            return false;
-        }
-        if ((this.pais == null) ? (other.pais != null) : !this.pais.equals(other.pais)) {
-            return false;
-        }
-        if (this.rol != other.rol) {
+        if (this.id != other.id) {
             return false;
         }
         return true;
     }
+
+ 
 
     //   ********************
     //   *  Active Record   *
@@ -201,8 +207,10 @@ public class Usuario
         return usuario;
     }
     
-    public static Usuario findByUsuario(EntityManager em, String usuario) {
-        return em.find(Usuario.class, usuario);
+    // Queries
+    
+    public static Usuario findById(EntityManager em, long id) {
+        return em.find(Usuario.class, id);
     }
 
 }
