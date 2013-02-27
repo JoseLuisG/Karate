@@ -2,11 +2,17 @@ package curso.karate;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -37,9 +43,18 @@ public class Competidor implements Serializable {
     @Column(length=255, nullable=false)
     private String foto;
     
+    @ManyToMany
+    @JoinTable(
+      name="categorias_competidores",
+      joinColumns={@JoinColumn(name="id_com", referencedColumnName="id")},
+      inverseJoinColumns={@JoinColumn(name="id_cat", referencedColumnName="id")})
+    private List<Categoria> categorias;
 
+    public Competidor() {
+    }
+    
+    
     // Getters & Setters
-
     public long getId() {
         return id;
     }
@@ -76,9 +91,9 @@ public class Competidor implements Serializable {
         return sexo;
     }
 
-    public void setSexo(String sexo) {
-        this.sexo = sexo;
-    }
+//    public void setSexo(String sexo) {
+//        this.sexo = sexo;
+//    }
 
     public SexoCompetidorEnum getSexoEnum() {
         return sexoEnum;
@@ -86,6 +101,7 @@ public class Competidor implements Serializable {
 
     public void setSexoEnum(SexoCompetidorEnum sexoEnum) {
         this.sexoEnum = sexoEnum;
+        this.sexo = sexoEnum.toString();
     }
 
     public String getPais() {
@@ -102,6 +118,14 @@ public class Competidor implements Serializable {
 
     public void setFoto(String foto) {
         this.foto = foto;
+    }
+    
+    public List<Categoria> getCategorias() {
+        return categorias;
+    }
+
+    public void setCategorias(List<Categoria> categorias) {
+        this.categorias = categorias;
     }
     
     // Equals & hashCode
@@ -138,4 +162,80 @@ public class Competidor implements Serializable {
 
     // Queries
     
+    
+    
+    // Modifying
+    public boolean create(EntityManager em) {
+        EntityTransaction et = em.getTransaction();
+        try {
+            et.begin();
+            boolean res = createNoTransaction(em);
+            et.commit();
+            return res;
+        } catch (Exception e) {
+            if (et.isActive()) {
+                et.rollback();
+            }
+//            throw new Exception("Error saving user");
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean createNoTransaction(EntityManager em) {
+        if (em.contains(this)) {
+            return false;
+        } else {
+            em.persist(this);
+            em.flush();
+            return true;
+        }
+    }
+    public Competidor update(EntityManager em) {
+        EntityTransaction et = em.getTransaction();
+        try {
+            et.begin();
+            Competidor competidor = updateNoTransaction(em);
+            et.commit();
+            return competidor;
+        } catch (Exception e) {
+            if (et.isActive()) {
+                et.rollback();
+            }
+            return null;
+        }
+    }
+
+    public Competidor updateNoTransaction(EntityManager em) {
+        Competidor competidor = em.merge(this);
+        em.flush();
+        return competidor;
+    }
+    
+    public boolean remove(EntityManager em) {
+        EntityTransaction et = em.getTransaction();
+        try {
+            et.begin();
+            boolean res = removeNoTransaction(em);
+            et.commit();
+            return res;
+        } catch (Exception e) {
+            if (et.isActive()) {
+                et.rollback();
+            }
+//            throw new Exception("Error saving user");
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean removeNoTransaction(EntityManager em) {
+        if (em.find(Competidor.class, this.getId()) != null) {
+            em.remove(this);
+            em.flush();
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
