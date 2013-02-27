@@ -1,3 +1,3 @@
 package curso.karate;
 
-public enum RolEnum {colaborador, administrador}
+public enum RolEnum {COLABORADOR, ADMINISTRADOR}
