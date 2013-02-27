@@ -3,13 +3,18 @@ package curso.karate;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.TypedQuery;
 
@@ -37,6 +42,13 @@ public class Categoria implements Serializable {
     
     private String modalidad;
     
+    @ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+    @JoinTable(
+      name="categorias_competidores",
+      joinColumns={@JoinColumn(name="id_cat", referencedColumnName="id")},
+      inverseJoinColumns={@JoinColumn(name="id_com", referencedColumnName="id")})
+     private List<Competidor> competidores;
+      
     //===========================================Constructors
     
     public Categoria() {
