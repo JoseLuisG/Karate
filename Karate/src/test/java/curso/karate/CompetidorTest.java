@@ -2,19 +2,17 @@ package curso.karate;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -54,75 +52,77 @@ public class CompetidorTest {
         List<Categoria> cat = new ArrayList<Categoria>();
         cat.add(cat1);
         cat.add(cat2);
-        comp1 = new Competidor(1L, "Julian Estévez", BigDecimal.valueOf(52.5), 21, SexoCompetidorEnum.FEMENINO, "España", "", cat);
-        comp2 = new Competidor(2L, "Chin Champú", BigDecimal.valueOf(51.5), 21, SexoCompetidorEnum.FEMENINO, "Corea Sur", "", cat);
+        comp1 = new Competidor(1L, "Julian Estévez", BigDecimal.valueOf(52.5), 21, SexoCompetidorEnum.FEMENINO, "España", "C:\foto", cat);
+        comp2 = new Competidor(2L, "Chin Champú", BigDecimal.valueOf(51.5), 21, SexoCompetidorEnum.FEMENINO, "Corea Sur", "C:\foto", cat);
         cat.clear();
         cat.add(cat3);
         cat.add(cat4);
-        comp3 = new Competidor(3L, "Pacal Simpson", BigDecimal.valueOf(71.5), 21, SexoCompetidorEnum.MASCULINO, "Francia", "", cat);
-        comp4 = new Competidor(4L, "Bellini de la Rosa", BigDecimal.valueOf(72.5), 21, SexoCompetidorEnum.MASCULINO, "Italia", "", cat);
-        comp5 = new Competidor(5L, "Santos Miliki", BigDecimal.valueOf(73.5), 21, SexoCompetidorEnum.MASCULINO, "España", "", cat);
+        comp3 = new Competidor(3L, "Pacal Simpson", BigDecimal.valueOf(71.5), 21, SexoCompetidorEnum.MASCULINO, "Francia", "C:\foto", cat);
+        comp4 = new Competidor(4L, "Bellini de la Rosa", BigDecimal.valueOf(72.5), 21, SexoCompetidorEnum.MASCULINO, "Italia", "C:\foto", cat);
+        comp5 = new Competidor(5L, "Santos Miliki", BigDecimal.valueOf(73.5), 21, SexoCompetidorEnum.MASCULINO, "España", "C:\foto", cat);
     }
 
-//    @Test
-//    public void test_addCompetidor() {
-//        boolean result = ajkr.create(em);
-//        result = result && bhp1.create(em);
-//        assertTrue(result);
-//
-//        assertTrue(Book.containsBook(em, bhp1.getId()));
-//        assertEquals(1, Book.count(em));
-//
-//        assertEquals(bhp1, Book.findById(em, bhp1.getId()));
-//    }
-//
-//    @Test
-//    @Ignore
-//    public void test_addBook_bookExists() {
-//        ajkr.create(em);
-//        bhp1.create(em);
-//
-//        boolean result = bhp1.create(em);
-//        assertFalse(result);
-//
-//        Book book1 = bhp1.clone();
-//        book1.setId(0);
-//        result = book1.create(em);
-//        assertFalse(result);
-//
-//        assertEquals(1, Book.count(em));
-//    }
-//
-//    @Test
-//    public void test_removeBook() {
-//        ajkr.create(em);
-//        bhp1.create(em);
-//        boolean result = bhp1.remove(em);
-//        assertTrue(result);
-//
-//        result = bhp1.remove(em);
-//        assertFalse(result);
-//
-//        assertFalse(Book.containsBook(em, bhp1.getId()));
-//        assertEquals(0, Book.count(em));
-//    }
-//
-//    @Test
-//    public void test_list() {
-//        ajkr.create(em);
-//        ago.create(em);
-//
-//        bhp1.create(em);
-//        bhp2.create(em);
-//        b1984.create(em);
-//
-//        Book[] expected = new Book[]{bhp2, bhp1, b1984};
-//
-//        Book[] books = Book.findAll(em).toArray(new Book[0]);
-//        assertEquals(3, books.length);
-//        assertArrayEquals(expected, books);
-//    }
-//
+    @Test
+    public void test_addCompetidor_CompNoExiste() {
+        boolean result = comp1.create(em);
+        result = result && comp2.create(em);
+        assertTrue(result);
+
+        assertTrue(Competidor.contains(em, comp1.getId()));
+        assertEquals(2, Competidor.count(em));
+
+        assertEquals(comp1, Competidor.findById(em, comp1.getId()));
+    }
+
+    @Test
+    public void test_addCompetidor_CompExiste() {
+        comp1.create(em);
+        boolean result = comp1.create(em);
+        assertFalse(result);
+    }
+
+    @Test
+    public void test_removeCompetidor() {
+        comp1.create(em);
+        boolean result = comp1.remove(em);
+        assertTrue(result);
+
+        result = comp1.remove(em);
+        assertFalse(result);
+
+        assertFalse(Competidor.contains(em, comp1.getId()));
+        assertEquals(0, Competidor.count(em));
+    }
+
+    @Test
+    public void test_list() {
+        comp1.create(em);
+        comp2.create(em);
+        comp3.create(em);
+
+        Competidor[] expected = new Competidor[]{comp1, comp2, comp3};
+
+        Competidor[] competidores = Competidor.findAll(em).toArray(new Competidor[0]);
+        assertEquals(3, competidores.length);
+        assertArrayEquals(expected, competidores);
+    }
+
+    @Test
+    public void test_update() throws SQLException {
+        comp1.create(em);
+        comp2.create(em);
+        comp3.create(em);
+        comp4.create(em);
+        comp5.create(em);
+
+        comp1.setNombre("Pepe");
+        comp1.update(em);
+
+        Competidor competidor = Competidor.findById(em, comp1.getId());
+
+        Assert.assertEquals(comp1.getNombre(), competidor.getNombre());
+    }
+        
 //    @Test
 //    public void test_findByISBN() {
 //        ajkr.create(em);

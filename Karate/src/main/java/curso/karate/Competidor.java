@@ -17,6 +17,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.TypedQuery;
 
 @Entity
 @Table(name="competidores")
@@ -184,9 +185,27 @@ public class Competidor implements Serializable {
     //
     // Active Record
     //
-
     // Queries
+    public static List<Competidor> findAll(EntityManager em) {
+        String sql = "SELECT x FROM Competidor x ORDER BY x.id";
+        TypedQuery<Competidor> query = em.createQuery(sql, Competidor.class);
+        return query.getResultList();
+    }
     
+    public static Competidor findById(EntityManager em, long id) {
+        return em.find(Competidor.class, id);
+    }
+    
+    public static boolean contains(EntityManager em, long id) {
+        return em.find(Competidor.class, id) != null;
+    }
+    
+    public static long count(EntityManager em) {
+        String sql = "SELECT COUNT(x) FROM Competidor x";
+        TypedQuery<Long> query = em.createQuery(sql, Long.class);
+        Long count = query.getSingleResult();
+        return count;
+    }
     
     
     // Modifying
