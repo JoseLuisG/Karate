@@ -16,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name="competidores")
@@ -37,7 +38,8 @@ public class Competidor implements Serializable {
     @Column(nullable=false)
     private String sexo;
     
-    private transient SexoCompetidorEnum sexoEnum;
+    @Transient
+    private SexoCompetidorEnum sexoEnum;
     
     @Column(length=50, nullable=false)
     private String pais;
@@ -55,16 +57,27 @@ public class Competidor implements Serializable {
     public Competidor() {
     }
 
-    public Competidor(long id, String nombre, BigDecimal peso, int edad, String sexo, SexoCompetidorEnum sexoEnum, String pais, String foto, List<Categoria> categorias) {
+    public Competidor(long id, String nombre, BigDecimal peso, int edad, SexoCompetidorEnum sexoEnum, String pais, String foto, List<Categoria> categorias) {
         this.id = id;
         this.nombre = nombre;
         this.peso = peso;
         this.edad = edad;
-        this.sexo = sexo;
+        this.sexo = sexoEnum.toString();
         this.sexoEnum = sexoEnum;
         this.pais = pais;
         this.foto = foto;
         this.categorias = categorias;
+    }
+    
+    public Competidor(long id, String nombre, BigDecimal peso, int edad, SexoCompetidorEnum sexoEnum, String pais, String foto) {
+        this.id = id;
+        this.nombre = nombre;
+        this.peso = peso;
+        this.edad = edad;
+        this.sexo = sexoEnum.toString();
+        this.sexoEnum = sexoEnum;
+        this.pais = pais;
+        this.foto = foto;
     }
     
     // Getters & Setters

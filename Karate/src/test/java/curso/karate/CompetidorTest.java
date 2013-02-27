@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -43,20 +44,28 @@ public class CompetidorTest {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("KaratePU");
         em = emf.createEntityManager();
 
-        //
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        //        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-        //cat1 = new Categoria(1L, "Cat 1",(BigDecimal)50, 55, 16, 18, SexoCategoriaEnum.MIXTA, ModalidadEnum.KATA);
+        cat1 = new Categoria(1L, "Cat 1", BigDecimal.valueOf(50), BigDecimal.valueOf(55), 16, 18, SexoCategoriaEnum.MIXTA, ModalidadEnum.KATA);
+        cat2 = new Categoria(2L, "Cat 2", BigDecimal.valueOf(50), BigDecimal.valueOf(55), 16, 18, SexoCategoriaEnum.MIXTA, ModalidadEnum.KUMITE);
+        cat3 = new Categoria(3L, "Cat 3", BigDecimal.valueOf(70), BigDecimal.valueOf(75), 16, 18, SexoCategoriaEnum.MIXTA, ModalidadEnum.KATA);
+        cat4 = new Categoria(4L, "Cat 4", BigDecimal.valueOf(70), BigDecimal.valueOf(75), 16, 18, SexoCategoriaEnum.MIXTA, ModalidadEnum.KUMITE);
 
-
-        comp1 = new Competidor();
-
-
+        List<Categoria> cat = new ArrayList<Categoria>();
+        cat.add(cat1);
+        cat.add(cat2);
+        comp1 = new Competidor(1L, "Julian Estévez", BigDecimal.valueOf(52.5), 21, SexoCompetidorEnum.FEMENINO, "España", "", cat);
+        comp2 = new Competidor(2L, "Chin Champú", BigDecimal.valueOf(51.5), 21, SexoCompetidorEnum.FEMENINO, "Corea Sur", "", cat);
+        cat.clear();
+        cat.add(cat3);
+        cat.add(cat4);
+        comp3 = new Competidor(3L, "Pacal Simpson", BigDecimal.valueOf(71.5), 21, SexoCompetidorEnum.MASCULINO, "Francia", "", cat);
+        comp4 = new Competidor(4L, "Bellini de la Rosa", BigDecimal.valueOf(72.5), 21, SexoCompetidorEnum.MASCULINO, "Italia", "", cat);
+        comp5 = new Competidor(5L, "Santos Miliki", BigDecimal.valueOf(73.5), 21, SexoCompetidorEnum.MASCULINO, "España", "", cat);
     }
-//
+
 //    @Test
-//    @Ignore
-//    public void test_addBook_bookNotExists() {
+//    public void test_addCompetidor() {
 //        boolean result = ajkr.create(em);
 //        result = result && bhp1.create(em);
 //        assertTrue(result);
