@@ -1,6 +1,5 @@
 package curso.karate;
 
-import java.beans.Transient;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import javax.persistence.Column;
@@ -37,5 +36,106 @@ public class Competidor implements Serializable {
     
     @Column(length=255, nullable=false)
     private String foto;
+    
+
+    // Getters & Setters
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public BigDecimal getPeso() {
+        return peso;
+    }
+
+    public void setPeso(BigDecimal peso) {
+        this.peso = peso;
+    }
+
+    public int getEdad() {
+        return edad;
+    }
+
+    public void setEdad(int edad) {
+        this.edad = edad;
+    }
+
+    public String getSexo() {
+        return sexo;
+    }
+
+    public void setSexo(String sexo) {
+        this.sexo = sexo;
+    }
+
+    public SexoCompetidorEnum getSexoEnum() {
+        return sexoEnum;
+    }
+
+    public void setSexoEnum(SexoCompetidorEnum sexoEnum) {
+        this.sexoEnum = sexoEnum;
+    }
+
+    public String getPais() {
+        return pais;
+    }
+
+    public void setPais(String pais) {
+        this.pais = pais;
+    }
+
+    public String getFoto() {
+        return foto;
+    }
+
+    public void setFoto(String foto) {
+        this.foto = foto;
+    }
+    
+    // Equals & hashCode
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 17 * hash + (int) (this.id ^ (this.id >>> 32));
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Competidor other = (Competidor) obj;
+        if (this.id != other.id) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Competidor - id=%d, nombre=%s", getId(), getNombre());
+    }
+    
+    //
+    // Active Record
+    //
+
+    // Queries
     
 }
