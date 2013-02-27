@@ -3,10 +3,12 @@ package curso.karate;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -43,7 +45,7 @@ public class Competidor implements Serializable {
     @Column(length=255, nullable=false)
     private String foto;
     
-    @ManyToMany
+    @ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
     @JoinTable(
       name="categorias_competidores",
       joinColumns={@JoinColumn(name="id_com", referencedColumnName="id")},
@@ -52,7 +54,18 @@ public class Competidor implements Serializable {
 
     public Competidor() {
     }
-    
+
+    public Competidor(long id, String nombre, BigDecimal peso, int edad, String sexo, SexoCompetidorEnum sexoEnum, String pais, String foto, List<Categoria> categorias) {
+        this.id = id;
+        this.nombre = nombre;
+        this.peso = peso;
+        this.edad = edad;
+        this.sexo = sexo;
+        this.sexoEnum = sexoEnum;
+        this.pais = pais;
+        this.foto = foto;
+        this.categorias = categorias;
+    }
     
     // Getters & Setters
     public long getId() {
@@ -87,16 +100,15 @@ public class Competidor implements Serializable {
         this.edad = edad;
     }
 
-    public String getSexo() {
-        return sexo;
-    }
-
+//    public String getSexo() {
+//        return sexo;
+//    }
 //    public void setSexo(String sexo) {
 //        this.sexo = sexo;
 //    }
 
     public SexoCompetidorEnum getSexoEnum() {
-        return sexoEnum;
+        return sexoEnum.valueOf(sexo);
     }
 
     public void setSexoEnum(SexoCompetidorEnum sexoEnum) {
