@@ -2,23 +2,19 @@ package curso.karate;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import javax.persistence.CascadeType;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.persistence.TypedQuery;
 
 @Entity
-@Table(name="books")
+@Table(name="categorias")
 public class Categoria implements Serializable {
 
     @Id
@@ -42,6 +38,8 @@ public class Categoria implements Serializable {
     private String modalidad;
     
     public Categoria() {
+        this.sexo = SexoCategoriaEnum.FEMENINA.toString();
+        this.modalidad = ModalidadEnum.KATA.toString();
     }
 
     public Categoria(long id, String nombre, BigDecimal pesoMin, BigDecimal pesoMax, int edadMin, int edadMax, SexoCategoriaEnum sexo, ModalidadEnum modalidad) {
@@ -112,63 +110,70 @@ public class Categoria implements Serializable {
         this.sexo = sexo.toString();
     }
 
-    public ModalidadEnum getModalidadE() {
+    public ModalidadEnum getModalidad() {
         return ModalidadEnum.valueOf(modalidad);
     }
 
-    public void setModalidadE(ModalidadEnum modalidad) {
+    public void setModalidad(ModalidadEnum modalidad) {
         this.modalidad = modalidad.toString();
     }
 
-}
-    
-    // =====================================================================================
-    //  A PARTIR DE AQUI -->  pendiente de adaptar
-    // Active Record
-    //======================================================================================
-/* 
+        
+
     // Queries
-    public static List<Book> findAll(EntityManager em) {
-        String sql = "SELECT x FROM Book x ORDER BY x.title";
-        TypedQuery<Book> query = em.createQuery(sql, Book.class);
+    public static Categoria findById(EntityManager em, long id) {
+        return em.find(Categoria.class, id);
+    }
+
+    public static boolean containsCategoria(EntityManager em, long id) {
+        return em.find(Categoria.class, id) != null;
+    }
+
+    public static List<Categoria> findAll(EntityManager em) {
+        String sql = "SELECT x FROM Categoria x ORDER BY x.nombre";
+        TypedQuery<Categoria> query = em.createQuery(sql, Categoria.class);
         return query.getResultList();
     }
 
-    public static Book findById(EntityManager em, long id) {
-        return em.find(Book.class, id);
-    }
-
-    public static Book findByISBN(EntityManager em, String isbn) {
-        String sql = "SELECT x FROM Book x WHERE x.isbn = :isbn";
-        TypedQuery<Book> query = em.createQuery(sql, Book.class);
-        query.setParameter("isbn", isbn);
-        return query.getSingleResult();
-    }
-
-    public static List<Book> findByYear(EntityManager em, int year) {
-        String sql = "SELECT x FROM Book x WHERE x.year = :year ORDER BY x.title";
-        TypedQuery<Book> query = em.createQuery(sql, Book.class);
-        query.setParameter("year", year);
+    public static List<Categoria> findBySexo(EntityManager em, SexoCategoriaEnum sexo) {
+        String sql = "SELECT x FROM Categoria x WHERE x.sexo = :sexo";
+        TypedQuery<Categoria> query = em.createQuery(sql, Categoria.class);
+        query.setParameter("sexo", sexo.toString());
         return query.getResultList();
     }
 
-    public static List<Book> findByAuthor(EntityManager em, Author author) {
-        String sql = "SELECT x FROM Book x WHERE x.author = :author";
-        TypedQuery<Book> query = em.createQuery(sql, Book.class);
-        query.setParameter("author", author);
+    public static List<Categoria> findByModalidad(EntityManager em, ModalidadEnum modalidad) {
+        String sql = "SELECT x FROM Categoria x WHERE x.modalidad = :modalidad";
+        TypedQuery<Categoria> query = em.createQuery(sql, Categoria.class);
+        query.setParameter("modalidad", modalidad.toString());
         return query.getResultList();
-    }
-
-    public static boolean containsBook(EntityManager em, long id) {
-        return em.find(Book.class, id) != null;
     }
 
     public static long count(EntityManager em) {
-        String sql = "SELECT COUNT(x) FROM Book x";
+        String sql = "SELECT COUNT(x) FROM Categoria x";
         TypedQuery<Long> query = em.createQuery(sql, Long.class);
         Long count = query.getSingleResult();
         return count;
     }
+
+    public static long countBySexo(EntityManager em, SexoCategoriaEnum sexo) {
+        String sql = "SELECT COUNT(x) FROM Categoria x WHERE x.sexo = :sexo";
+        TypedQuery<Long> query = em.createQuery(sql, Long.class);
+        query.setParameter("sexo", sexo.toString());
+        Long count = query.getSingleResult();
+        return count;
+    }
+
+    public static long countByModalidad(EntityManager em, ModalidadEnum modalidad) {
+        String sql = "SELECT COUNT(x) FROM Categoria x WHERE x.modalidad = :modalidad";
+        TypedQuery<Long> query = em.createQuery(sql, Long.class);
+        query.setParameter("modalidad", modalidad.toString());
+        Long count = query.getSingleResult();
+        return count;
+    }
+
+
+
 
     // Modifying
 
@@ -217,7 +222,7 @@ public class Categoria implements Serializable {
     }
 
     public boolean removeNoTransaction(EntityManager em) {
-        if (em.find(Book.class, this.getId()) != null) {
+        if (em.find(Categoria.class, this.getId()) != null) {
             em.remove(this);
             em.flush();
             return true;
@@ -227,4 +232,3 @@ public class Categoria implements Serializable {
     }
   
 }
-*/
